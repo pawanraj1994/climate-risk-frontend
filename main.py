@@ -56,7 +56,8 @@ sector = st.selectbox(
 # Calculate button
 if st.button("🔍 Calculate Risk", type="primary"):
     # Replace with YOUR actual backend URL after deployment
-    api_url = "https://rainfall-risk-api.onrender.com/risk" # UPDATE THIS!
+    api_url = "https://climate-risk-backend.onrender.com/risk"
+ # UPDATE THIS!
     
     payload = {
         "latitude": latitude,
