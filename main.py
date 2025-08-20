@@ -1,30 +1,41 @@
 import streamlit as st
 import requests
 import time
+import pandas as pd
 
 # Page setup
-st.set_page_config(page_title="🌧️ Climate Risk Calculator", page_icon="🌍", layout="wide")
+st.set_page_config(
+    page_title="🌧️ Climate Hazard Risk Calculator",
+    page_icon="🌍",
+    layout="wide"
+)
 
-st.title("🌧️ Climate Hazard Risk Calculator")
-st.markdown("Enter location details to assess rainfall-related climate risk.")
+# Title
+st.markdown("<h1 style='text-align: center;'>🌧️ Climate Hazard Risk Calculator</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Assess rainfall-related climate risk for your sector</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-# Inputs
+# Input section
 col1, col2 = st.columns(2)
 with col1:
     lat = st.number_input("Latitude", value=19.0, format="%.4f")
     lon = st.number_input("Longitude", value=73.0, format="%.4f")
 with col2:
-    sector = st.text_input("Sector", value="Chemical")
+    sector = st.selectbox(
+        "Sector",
+        ["Chemical", "Pharma", "Automobile", "Textile", "Other"],
+        index=0
+    )
 
-# Action button
-if st.button("🔍 Calculate Risk"):
+# Button
+if st.button("🔍 Calculate Risk", use_container_width=True):
     API_URL = "https://climate-risk-backend.onrender.com/risk"
     payload = {"latitude": lat, "longitude": lon, "sector": sector}
 
     with st.spinner("⏳ Processing 100+ years of rainfall data... Please wait"):
         try:
             response = requests.post(API_URL, json=payload)
-            time.sleep(1)  # small delay for spinner effect
+            time.sleep(1)  # small delay for spinner
 
             if response.status_code == 200:
                 result = response.json()
@@ -43,7 +54,7 @@ if st.button("🔍 Calculate Risk"):
                 with tab1:
                     st.markdown("### Hazard Indicators")
                     hazards = result["hazards"]
-                    df = {k: [v] for k, v in hazards.items()}
+                    df = pd.DataFrame([hazards])
                     st.dataframe(df)
 
                 with tab2:
